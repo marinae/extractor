@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 
-#include "TypeConversion.hpp"
+#include "extractor/TypeConversion.hpp"
 #include "llvm/Support/raw_ostream.h"
 #include "clang/AST/Decl.h"
 #include "clang/ASTMatchers/ASTMatchers.h"

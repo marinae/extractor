@@ -1,10 +1,9 @@
 #include <iostream>
 #include <string>
 
+#include "extractor/Utils.hpp"
 #include "clang/Tooling/CompilationDatabase.h"
 #include "clang/Tooling/JSONCompilationDatabase.h"
-
-#include "extractor/Utils.hpp"
 
 namespace utils
 {
