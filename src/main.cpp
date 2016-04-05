@@ -2,7 +2,9 @@
 #include <string>
 #include <vector>
 
+#include "extractor/BindedMatchers.hpp"
 #include "extractor/Matcher.hpp"
+#include "extractor/TypeConversion.hpp"
 #include "extractor/Utils.hpp"
 #include "clang/AST/Decl.h"
 #include "clang/AST/Stmt.h"
@@ -46,34 +48,15 @@ int main(int argc, char *argv[])
 
     // Add matchers
     ca::MatchFinder finder;
+    std::string pathRegex(path + "*");
 
-    match::Matcher<clang::IfStmt> ifPrinter;
-    match::Matcher<clang::ForStmt> forPrinter;
-    match::Matcher<clang::CXXForRangeStmt> rangePrinter;
+    match::Matcher<clang::IfStmt> ifHandler;
+    match::Matcher<clang::ForStmt> forHandler;
+    match::Matcher<clang::CXXForRangeStmt> rangeHandler;
 
-    // TODO: move to utils
-    auto ifMatcher = ca::ifStmt().bind(utils::getStringByType<clang::IfStmt>());
-    auto forMatcher = ca::forStmt().bind(utils::getStringByType<clang::ForStmt>());
-    auto rangeMatcher = ca::cxxForRangeStmt().bind(utils::getStringByType<clang::CXXForRangeStmt>());
-
-    auto functionIfMatcher = ca::functionDecl(ca::allOf(ca::isExpansionInFileMatching(path + "*"),
-                                                        ca::isDefinition(),
-                                                        ca::forEachDescendant(ifMatcher)
-                                                        )).bind("function");
-    auto functionForMatcher = ca::functionDecl(ca::allOf(ca::isExpansionInFileMatching(path + "*"),
-                                                         ca::isDefinition(),
-                                                         ca::forEachDescendant(forMatcher)
-                                                         )).bind("function");
-    auto functionRangeMatcher = ca::functionDecl(ca::allOf(ca::isExpansionInFileMatching(path + "*"),
-                                                         ca::isDefinition(),
-                                                         ca::forEachDescendant(rangeMatcher)
-                                                         )).bind("function");
-    //
-
-    // TODO: find just all methods!
-    finder.addMatcher(functionIfMatcher, &ifPrinter);
-    finder.addMatcher(functionForMatcher, &forPrinter);
-    finder.addMatcher(functionRangeMatcher, &rangePrinter);
+    finder.addMatcher(match::getMatcher<clang::IfStmt>(pathRegex), &ifHandler);
+    finder.addMatcher(match::getMatcher<clang::ForStmt>(pathRegex), &forHandler);
+    finder.addMatcher(match::getMatcher<clang::CXXForRangeStmt>(pathRegex), &rangeHandler);
 
     // Run tool
     int rc = tool.run(ct::newFrontendActionFactory(&finder).get());
