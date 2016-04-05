@@ -7,39 +7,63 @@ namespace match
 {
 
     template<>
-    const FunctionDeclMatcher getMatcher<clang::IfStmt>(const std::string &path)
+    const StmtMatcher getStmtMatcher<clang::IfStmt>()
     {
-        std::string functionStr = utils::getStringByType<clang::FunctionDecl>();
-        std::string nodeStr = utils::getStringByType<clang::IfStmt>();
-
-        return ca::functionDecl(ca::allOf(ca::isExpansionInFileMatching(path),
-                                          ca::isDefinition(),
-                                          ca::forEachDescendant(ca::ifStmt().bind(nodeStr)))
-                               ).bind(functionStr);
+        return ca::ifStmt().bind(utils::getStringByType<clang::IfStmt>());
     }
 
     template<>
-    const FunctionDeclMatcher getMatcher<clang::ForStmt>(const std::string &path)
+    const StmtMatcher getStmtMatcher<clang::ForStmt>()
     {
-        std::string functionStr = utils::getStringByType<clang::FunctionDecl>();
-        std::string nodeStr = utils::getStringByType<clang::ForStmt>();
-
-        return ca::functionDecl(ca::allOf(ca::isExpansionInFileMatching(path),
-                                          ca::isDefinition(),
-                                          ca::forEachDescendant(ca::forStmt().bind(nodeStr)))
-                               ).bind(functionStr);
+        return ca::forStmt().bind(utils::getStringByType<clang::ForStmt>());
     }
 
     template<>
-    const FunctionDeclMatcher getMatcher<clang::CXXForRangeStmt>(const std::string &path)
+    const StmtMatcher getStmtMatcher<clang::CXXForRangeStmt>()
     {
-        std::string functionStr = utils::getStringByType<clang::FunctionDecl>();
-        std::string nodeStr = utils::getStringByType<clang::CXXForRangeStmt>();
+        return ca::cxxForRangeStmt().bind(utils::getStringByType<clang::CXXForRangeStmt>());
+    }
 
-        return ca::functionDecl(ca::allOf(ca::isExpansionInFileMatching(path),
-                                          ca::isDefinition(),
-                                          ca::forEachDescendant(ca::cxxForRangeStmt().bind(nodeStr)))
-                               ).bind(functionStr);
+    template<>
+    const StmtMatcher getStmtMatcher<clang::WhileStmt>()
+    {
+        return ca::whileStmt().bind(utils::getStringByType<clang::WhileStmt>());
+    }
+
+    template<>
+    const StmtMatcher getStmtMatcher<clang::DoStmt>()
+    {
+        return ca::doStmt().bind(utils::getStringByType<clang::DoStmt>());
+    }
+
+    template<>
+    const StmtMatcher getStmtMatcher<clang::SwitchCase>()
+    {
+        return ca::switchCase().bind(utils::getStringByType<clang::SwitchCase>());
+    }
+
+    template<>
+    const StmtMatcher getStmtMatcher<clang::CXXCatchStmt>()
+    {
+        return ca::cxxCatchStmt().bind(utils::getStringByType<clang::CXXCatchStmt>());
+    }
+
+    template<>
+    const StmtMatcher getStmtMatcher<clang::BinaryOperator>()
+    {
+        return ca::binaryOperator().bind(utils::getStringByType<clang::BinaryOperator>());
+    }
+
+    template<>
+    const StmtMatcher getStmtMatcher<clang::ConditionalOperator>()
+    {
+        return ca::conditionalOperator().bind(utils::getStringByType<clang::ConditionalOperator>());
+    }
+
+    template<>
+    const StmtMatcher getStmtMatcher<clang::BinaryConditionalOperator>()
+    {
+        return ca::binaryConditionalOperator().bind(utils::getStringByType<clang::BinaryConditionalOperator>());
     }
 
 } // namespace match

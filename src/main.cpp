@@ -4,7 +4,6 @@
 
 #include "extractor/BindedMatchers.hpp"
 #include "extractor/Matcher.hpp"
-#include "extractor/TypeConversion.hpp"
 #include "extractor/Utils.hpp"
 #include "clang/AST/Decl.h"
 #include "clang/AST/Stmt.h"
