@@ -6,6 +6,7 @@
 #include <string>
 
 #include "extractor/TypeConversion.hpp"
+#include "extractor/Utils.hpp"
 #include "llvm/Support/raw_ostream.h"
 #include "clang/AST/Decl.h"
 #include "clang/ASTMatchers/ASTMatchers.h"
@@ -68,7 +69,7 @@ namespace match
             return;
         }
 
-        // Check if it is a function template
+        // Check if it is not a function template
         auto functionTemplate = clang::FunctionDecl::TemplatedKind::TK_FunctionTemplate;
 
         if (fd->getTemplatedKind() == functionTemplate)
@@ -76,9 +77,17 @@ namespace match
             return;
         }
 
-        // TODO: check if switch case has body
+        // Check if statement is valid
+        // Invalid statements are:
+        // - a switch case without body
+        // - a non-logical binary operator
+        if (!utils::isValidStmt<T>(node))
+        {
+            return;
+        }
 
         // Get function signature (weird method)
+        // TODO: create method for it
         std::string out;
         llvm::raw_string_ostream ostr(out);
         fd->dump(ostr);

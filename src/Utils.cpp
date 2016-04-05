@@ -30,4 +30,13 @@ namespace utils
         }
     }
 
+    template<>
+    bool isValidStmt(const clang::BinaryOperator *stmt)
+    {
+        clang::BinaryOperator::Opcode op = stmt->getOpcode();
+
+        return (op == clang::BinaryOperator::Opcode::BO_LAnd) ||
+               (op == clang::BinaryOperator::Opcode::BO_LOr);
+    }
+
 } // namespace utils

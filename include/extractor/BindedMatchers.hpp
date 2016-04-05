@@ -36,7 +36,7 @@ namespace match
     const StmtMatcher getStmtMatcher<clang::DoStmt>();
 
     template<>
-    const StmtMatcher getStmtMatcher<clang::SwitchCase>();
+    const StmtMatcher getStmtMatcher<clang::CaseStmt>();
 
     template<>
     const StmtMatcher getStmtMatcher<clang::CXXCatchStmt>();

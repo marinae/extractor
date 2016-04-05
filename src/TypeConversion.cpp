@@ -40,7 +40,7 @@ namespace utils
     }
 
     template<>
-    std::string getStringByType<clang::SwitchCase>()
+    std::string getStringByType<clang::CaseStmt>()
     {
         return std::string("case");
     }

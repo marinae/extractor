@@ -37,9 +37,9 @@ namespace match
     }
 
     template<>
-    const StmtMatcher getStmtMatcher<clang::SwitchCase>()
+    const StmtMatcher getStmtMatcher<clang::CaseStmt>()
     {
-        return ca::switchCase().bind(utils::getStringByType<clang::SwitchCase>());
+        return ca::caseStmt().bind(utils::getStringByType<clang::CaseStmt>());
     }
 
     template<>

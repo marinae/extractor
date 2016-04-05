@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 
+#include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/Tooling/CompilationDatabase.h"
 #include "clang/Tooling/JSONCompilationDatabase.h"
 
@@ -15,6 +16,19 @@ namespace utils
     void generateUsageStr();
 
     std::unique_ptr<ct::JSONCompilationDatabase> loadDB(const std::string &path);
+
+    template<typename T>
+    bool isValidStmt(const T *)
+    {
+        return true;
+    }
+
+    // TODO: check for non-empty body
+    /*template<>
+    bool isValidStmt(const clang::CaseStmt *stmt);*/
+
+    template<>
+    bool isValidStmt(const clang::BinaryOperator *stmt);
 
 } // namespace utils
 

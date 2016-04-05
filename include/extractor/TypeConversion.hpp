@@ -31,7 +31,7 @@ namespace utils
     std::string getStringByType<clang::DoStmt>();
 
     template<>
-    std::string getStringByType<clang::SwitchCase>();
+    std::string getStringByType<clang::CaseStmt>();
 
     template<>
     std::string getStringByType<clang::CXXCatchStmt>();

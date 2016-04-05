@@ -52,10 +52,24 @@ int main(int argc, char *argv[])
     match::Matcher<clang::IfStmt> ifHandler;
     match::Matcher<clang::ForStmt> forHandler;
     match::Matcher<clang::CXXForRangeStmt> rangeHandler;
+    match::Matcher<clang::WhileStmt> whileHandler;
+    match::Matcher<clang::DoStmt> doHandler;
+    match::Matcher<clang::CaseStmt> caseHandler;
+    match::Matcher<clang::CXXCatchStmt> catchHandler;
+    match::Matcher<clang::BinaryOperator> binaryOpHandler;
+    match::Matcher<clang::ConditionalOperator> condOpHandler;
+    match::Matcher<clang::BinaryConditionalOperator> binaryCondOpHandler;
 
     finder.addMatcher(match::getMatcher<clang::IfStmt>(pathRegex), &ifHandler);
     finder.addMatcher(match::getMatcher<clang::ForStmt>(pathRegex), &forHandler);
     finder.addMatcher(match::getMatcher<clang::CXXForRangeStmt>(pathRegex), &rangeHandler);
+    finder.addMatcher(match::getMatcher<clang::WhileStmt>(pathRegex), &whileHandler);
+    finder.addMatcher(match::getMatcher<clang::DoStmt>(pathRegex), &doHandler);
+    finder.addMatcher(match::getMatcher<clang::CaseStmt>(pathRegex), &caseHandler);
+    finder.addMatcher(match::getMatcher<clang::CXXCatchStmt>(pathRegex), &catchHandler);
+    finder.addMatcher(match::getMatcher<clang::BinaryOperator>(pathRegex), &binaryOpHandler);
+    finder.addMatcher(match::getMatcher<clang::ConditionalOperator>(pathRegex), &condOpHandler);
+    finder.addMatcher(match::getMatcher<clang::BinaryConditionalOperator>(pathRegex), &binaryCondOpHandler);
 
     // Run tool
     int rc = tool.run(ct::newFrontendActionFactory(&finder).get());
