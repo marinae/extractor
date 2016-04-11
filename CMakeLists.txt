@@ -1,7 +1,3 @@
-set(LLVM_LINK_COMPONENTS support)
-
-# TODO: set variables
-
 include_directories(
     include
     )
