@@ -111,7 +111,6 @@ namespace match
 
         FunctionId fid;
         fid.name = fd->getQualifiedNameAsString();
-        // TODO: crop project dir
         fid.path = result.Context->getSourceManager().getFilename(fd->getLocation());
         fid.signature = line.substr(firstQuote, lastQuote);
 
