@@ -92,14 +92,17 @@ namespace match
             return;
         }
 
+        const clang::SourceManager &sm = result.Context->getSourceManager();
+        const clang::SourceLocation loc = node->getLocStart();
+
+        // Fill map key
         FunctionId fid;
+        fid.path = sm.getFilename(fd->getLocation());
         fid.name = fd->getQualifiedNameAsString();
-        fid.path = result.Context->getSourceManager().getFilename(fd->getLocation());
         fid.signature = signature;
 
-        // TODO: log what has been found (pretty)
-        llvm::outs() << "An object '" << nodeStr << "' was found at " << fid.path << ", line "
-                     << result.Context->getSourceManager().getSpellingLineNumber(node->getLocStart()) << "\n";
+        // Log match
+        utils::logMatch(fid.path, sm.getSpellingLineNumber(loc), sm.getSpellingColumnNumber(loc), nodeStr);
 
         // Increase cyclomatic number
         ++stats[fid].cyclomaticComplexity;

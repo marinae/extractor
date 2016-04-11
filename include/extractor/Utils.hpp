@@ -32,6 +32,8 @@ namespace utils
 
     std::string parseSignature(const clang::FunctionDecl *decl);
 
+    void logMatch(const std::string &path, unsigned line, unsigned column, const std::string &object);
+
 } // namespace utils
 
 #endif // EXTRACTOR_UTILS

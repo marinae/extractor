@@ -67,4 +67,9 @@ namespace utils
         return line.substr(firstQuote, lastQuote);
     }
 
+    void logMatch(const std::string &path, unsigned line, unsigned column, const std::string &object)
+    {
+        std::cout << "Match at " << path << ", line " << line << ", col " << column << ":\t'" << object << "'\n";
+    }
+
 } // namespace utils
