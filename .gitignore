@@ -1,5 +1,6 @@
 # Qt project files
 *.config
 *.creator
+*.creator.user
 *.files
 *.includes
