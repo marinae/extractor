@@ -2,6 +2,7 @@
 #include <string>
 
 #include "extractor/Utils.hpp"
+#include "llvm/Support/raw_ostream.h"
 #include "clang/Tooling/CompilationDatabase.h"
 #include "clang/Tooling/JSONCompilationDatabase.h"
 
@@ -37,6 +38,33 @@ namespace utils
 
         return (op == clang::BinaryOperator::Opcode::BO_LAnd) ||
                (op == clang::BinaryOperator::Opcode::BO_LOr);
+    }
+
+    std::string parseSignature(const clang::FunctionDecl *decl)
+    {
+        std::string out;
+        llvm::raw_string_ostream ostr(out);
+
+        decl->dump(ostr);
+
+        size_t pos = out.find("\n");
+        if (pos == std::string::npos)
+        {
+            std::cerr << "Error while parsing AST (first line not found)\n";
+            return std::string();
+        }
+
+        std::string line = out.substr(0, pos);
+        size_t lastQuote = line.find_last_of("'");
+        size_t firstQuote = line.find_last_of("'", lastQuote - 1);
+
+        if (firstQuote == std::string::npos || lastQuote == std::string::npos)
+        {
+            std::cerr << "Error while parsing AST (signature not found)\n";
+            return std::string();
+        }
+
+        return line.substr(firstQuote, lastQuote);
     }
 
 } // namespace utils

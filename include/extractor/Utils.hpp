@@ -30,6 +30,8 @@ namespace utils
     template<>
     bool isValidStmt(const clang::BinaryOperator *stmt);
 
+    std::string parseSignature(const clang::FunctionDecl *decl);
+
 } // namespace utils
 
 #endif // EXTRACTOR_UTILS

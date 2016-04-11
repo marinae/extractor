@@ -7,7 +7,6 @@
 
 #include "extractor/TypeConversion.hpp"
 #include "extractor/Utils.hpp"
-#include "llvm/Support/raw_ostream.h"
 #include "clang/AST/Decl.h"
 #include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
@@ -86,33 +85,17 @@ namespace match
             return;
         }
 
-        // Get function signature (weird method)
-        // TODO: create method for it
-        std::string out;
-        llvm::raw_string_ostream ostr(out);
-        fd->dump(ostr);
-
-        size_t pos = out.find("\n");
-        if (pos == std::string::npos)
+        // Parse function signature from AST (there is no method to get it!)
+        std::string signature = utils::parseSignature(fd);
+        if (signature.empty())
         {
-            llvm::errs() << "Error while parsing AST (first line not found)\n";
-            return;
-        }
-
-        std::string line = out.substr(0, pos);
-        size_t lastQuote = line.find_last_of("'");
-        size_t firstQuote = line.find_last_of("'", lastQuote - 1);
-
-        if (firstQuote == std::string::npos || lastQuote == std::string::npos)
-        {
-            llvm::errs() << "Error while parsing AST (signature not found)\n";
             return;
         }
 
         FunctionId fid;
         fid.name = fd->getQualifiedNameAsString();
         fid.path = result.Context->getSourceManager().getFilename(fd->getLocation());
-        fid.signature = line.substr(firstQuote, lastQuote);
+        fid.signature = signature;
 
         // TODO: log what has been found (pretty)
         llvm::outs() << "An object '" << nodeStr << "' was found at " << fid.path << ", line "
