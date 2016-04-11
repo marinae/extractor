@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -79,14 +80,23 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    // TODO: pretty print
-    // Get results
+    // Output results
+    std::ofstream output;
+    output.open("results.txt");
+    if (!output.is_open())
+    {
+        std::cerr << "Error while opening file for writing\n";
+        return -1;
+    }
+    output << "Path\tName\tSignature\tCyclomaticN\n";
     auto stats = match::MatcherBase::getStats();
     for (auto it = stats.begin(); it != stats.end(); ++it)
     {
-        std::cout << it->first.path << " "
-                  << it->first.name << " "
-                  << it->first.signature << " "
-                  << it->second.cyclomaticComplexity << "\n";
+        output << it->first.path << "\t"
+               << it->first.name << "\t"
+               << it->first.signature << "\t"
+               << it->second.cyclomaticComplexity << "\n";
     }
+
+    return 0;
 }
