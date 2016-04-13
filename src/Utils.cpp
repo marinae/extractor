@@ -42,6 +42,7 @@ namespace utils
 
     std::string parseSignature(const clang::FunctionDecl *decl)
     {
+        // TODO: try doing it other way
         std::string buf;
         llvm::raw_string_ostream ostr(buf);
 

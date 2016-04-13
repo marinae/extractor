@@ -62,6 +62,7 @@ namespace match
     template<typename T>
     void Matcher<T>::run(const ca::MatchFinder::MatchResult &result)
     {
+        // TODO: do not duplicate code
         std::string functionStr = utils::getStringByType<clang::FunctionDecl>();
         std::string nodeStr = utils::getStringByType<T>();
 
