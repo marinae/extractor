@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
     ca::MatchFinder finder;
     std::string pathRegex(path + "*");
 
+    match::SimpleMatcher functionHandler;
     match::Matcher<clang::IfStmt> ifHandler;
     match::Matcher<clang::ForStmt> forHandler;
     match::Matcher<clang::CXXForRangeStmt> rangeHandler;
@@ -61,6 +62,7 @@ int main(int argc, char *argv[])
     match::Matcher<clang::ConditionalOperator> condOpHandler;
     match::Matcher<clang::BinaryConditionalOperator> binaryCondOpHandler;
 
+    finder.addMatcher(match::getMatcher<clang::FunctionDecl>(pathRegex), &functionHandler);
     finder.addMatcher(match::getMatcher<clang::IfStmt>(pathRegex), &ifHandler);
     finder.addMatcher(match::getMatcher<clang::ForStmt>(pathRegex), &forHandler);
     finder.addMatcher(match::getMatcher<clang::CXXForRangeStmt>(pathRegex), &rangeHandler);
@@ -95,7 +97,7 @@ int main(int argc, char *argv[])
         output << it->first.path << "\t"
                << it->first.name << "\t"
                << it->first.signature << "\t"
-               << it->second.cyclomaticComplexity << "\n";
+               << it->second.cyclomaticN << "\n";
     }
 
     return 0;

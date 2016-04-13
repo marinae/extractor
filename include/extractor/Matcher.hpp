@@ -29,7 +29,7 @@ namespace match
     {
         FunctionInfo();
 
-        uint cyclomaticComplexity;
+        uint cyclomaticN;
         // TODO: other metrics
     };
 
@@ -44,6 +44,12 @@ namespace match
         static std::map<FunctionId, FunctionInfo> stats;
     };
 
+    class SimpleMatcher : public MatcherBase, public ca::MatchFinder::MatchCallback
+    {
+    public:
+        virtual void run(const ca::MatchFinder::MatchResult &result);
+    };
+
     template<typename T>
     class Matcher : public MatcherBase, public ca::MatchFinder::MatchCallback
     {
@@ -51,7 +57,7 @@ namespace match
         virtual void run(const ca::MatchFinder::MatchResult &result);
     };
 
-    // Implementation of template methods
+    // Implementation of template method
 
     template<typename T>
     void Matcher<T>::run(const ca::MatchFinder::MatchResult &result)
@@ -105,7 +111,7 @@ namespace match
         utils::logMatch(fid.path, sm.getSpellingLineNumber(loc), sm.getSpellingColumnNumber(loc), nodeStr);
 
         // Increase cyclomatic number
-        ++stats[fid].cyclomaticComplexity;
+        ++stats[fid].cyclomaticN;
     }
 
 } // namespace match

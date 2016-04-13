@@ -66,4 +66,14 @@ namespace match
         return ca::binaryConditionalOperator().bind(utils::getStringByType<clang::BinaryConditionalOperator>());
     }
 
+    template<>
+    const DeclMatcher getMatcher<clang::FunctionDecl>(const std::string &path)
+    {
+        std::string functionStr = utils::getStringByType<clang::FunctionDecl>();
+
+        return ca::functionDecl(ca::allOf(ca::isExpansionInFileMatching(path),
+                                          ca::isDefinition())
+                               ).bind(functionStr);
+    }
+
 } // namespace match

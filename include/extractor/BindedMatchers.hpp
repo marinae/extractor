@@ -61,6 +61,9 @@ namespace match
                                ).bind(functionStr);
     }
 
+    template<>
+    const DeclMatcher getMatcher<clang::FunctionDecl>(const std::string &path);
+
 } // namespace match
 
 #endif // EXTRACTOR_BINDED_MATCHERS

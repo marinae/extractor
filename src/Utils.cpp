@@ -42,10 +42,11 @@ namespace utils
 
     std::string parseSignature(const clang::FunctionDecl *decl)
     {
-        std::string out;
-        llvm::raw_string_ostream ostr(out);
+        std::string buf;
+        llvm::raw_string_ostream ostr(buf);
 
         decl->dump(ostr);
+        const std::string &out = ostr.str();
 
         size_t pos = out.find("\n");
         if (pos == std::string::npos)
