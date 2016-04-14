@@ -75,6 +75,12 @@ namespace match
             return;
         }
 
+        // Check if declaration was implicitly generated
+        if (fd->isImplicit())
+        {
+            return;
+        }
+
         // Check if it is not a function template
         auto functionTemplate = clang::FunctionDecl::TemplatedKind::TK_FunctionTemplate;
 

@@ -32,6 +32,19 @@ namespace utils
     }
 
     template<>
+    bool isValidStmt(const clang::CaseStmt *stmt)
+    {
+        // TODO: try not to hardcode
+        std::string buf;
+        llvm::raw_string_ostream ostr(buf);
+
+        stmt->getSubStmt()->dump(ostr);
+        const std::string &out = ostr.str();
+
+        return (out.substr(0, 8) != "CaseStmt");
+    }
+
+    template<>
     bool isValidStmt(const clang::BinaryOperator *stmt)
     {
         clang::BinaryOperator::Opcode op = stmt->getOpcode();

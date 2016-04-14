@@ -23,9 +23,8 @@ namespace utils
         return true;
     }
 
-    // TODO: check for non-empty body
-    /*template<>
-    bool isValidStmt(const clang::CaseStmt *stmt);*/
+    template<>
+    bool isValidStmt(const clang::CaseStmt *stmt);
 
     template<>
     bool isValidStmt(const clang::BinaryOperator *stmt);
