@@ -23,7 +23,8 @@ namespace match
     std::map<FunctionId, FunctionInfo> MatcherBase::stats;
 
     FunctionInfo::FunctionInfo()
-    : cyclomaticN(0)
+    : loc(0)
+    , cyclomaticN(0)
     {}
 
     MatcherBase::~MatcherBase()
@@ -83,6 +84,11 @@ namespace match
 
         // Log match
         utils::logMatch(fid.path, fid.line, fid.column, functionStr);
+
+        // Count lines of code in function body
+        unsigned bodyStart = sm.getSpellingLineNumber(fd->getBody()->getLocStart());
+        unsigned bodyEnd = sm.getSpellingLineNumber(fd->getBody()->getLocEnd());
+        stats[fid].loc = bodyEnd - bodyStart + 1;
 
         // Increase cyclomatic number
         ++stats[fid].cyclomaticN;

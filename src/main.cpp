@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
         std::cerr << "Error while opening file for writing\n";
         return -1;
     }
-    output << "Path\tLine\tColumn\tName\tSignature\tCyclomaticN\n";
+    output << "Path\tLine\tColumn\tName\tSignature\tLOC\tCyclomaticN\n";
     auto stats = match::MatcherBase::getStats();
     for (auto it = stats.begin(); it != stats.end(); ++it)
     {
@@ -99,6 +99,7 @@ int main(int argc, char *argv[])
                << it->first.column << "\t"
                << it->first.name << "\t"
                << it->first.signature << "\t"
+               << it->second.loc << "\t"
                << it->second.cyclomaticN << "\n";
     }
 

@@ -31,7 +31,8 @@ namespace match
     {
         FunctionInfo();
 
-        uint cyclomaticN;
+        unsigned loc;
+        unsigned cyclomaticN;
         // TODO: other metrics
     };
 
