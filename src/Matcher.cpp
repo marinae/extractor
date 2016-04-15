@@ -34,33 +34,38 @@ namespace match
         return stats;
     }
 
+    std::string MatcherBase::getSignature(const clang::FunctionDecl *decl)
+    {
+        if (!decl)
+        {
+            return std::string();
+        }
+
+        // Check if declaration was implicitly generated
+        if (decl->isImplicit())
+        {
+            return std::string();
+        }
+
+        // Check if it is not a function template
+        auto functionTemplate = clang::FunctionDecl::TemplatedKind::TK_FunctionTemplate;
+        if (decl->getTemplatedKind() == functionTemplate)
+        {
+            return std::string();
+        }
+
+        // Parse function signature from AST (there is no method to get it!)
+        return utils::parseSignature(decl);
+    }
+
     void SimpleMatcher::run(const ca::MatchFinder::MatchResult &result)
     {
         // Get matched AST node
         std::string functionStr = utils::getStringByType<clang::FunctionDecl>();
         const clang::FunctionDecl *fd = result.Nodes.getNodeAs<clang::FunctionDecl>(functionStr);
 
-        if (!fd)
-        {
-            return;
-        }
-
-        // Check if declaration was implicitly generated
-        if (fd->isImplicit())
-        {
-            return;
-        }
-
-        // Check if it is not a function template
-        auto functionTemplate = clang::FunctionDecl::TemplatedKind::TK_FunctionTemplate;
-
-        if (fd->getTemplatedKind() == functionTemplate)
-        {
-            return;
-        }
-
-        // Parse function signature from AST (there is no method to get it!)
-        std::string signature = utils::parseSignature(fd);
+        // Check if object is valid and get function signature
+        std::string signature = getSignature(fd);
         if (signature.empty())
         {
             return;
@@ -69,14 +74,15 @@ namespace match
         const clang::SourceManager &sm = result.Context->getSourceManager();
         const clang::SourceLocation loc = fd->getLocStart();
 
-        // Fill map key
         FunctionId fid;
-        fid.path = sm.getFilename(fd->getLocation());
-        fid.name = fd->getQualifiedNameAsString();
+        fid.path      = sm.getFilename(fd->getLocation());
+        fid.name      = fd->getQualifiedNameAsString();
         fid.signature = signature;
+        fid.line      = sm.getSpellingLineNumber(loc);
+        fid.column    = sm.getSpellingColumnNumber(loc);
 
         // Log match
-        utils::logMatch(fid.path, sm.getSpellingLineNumber(loc), sm.getSpellingColumnNumber(loc), functionStr);
+        utils::logMatch(fid.path, fid.line, fid.column, functionStr);
 
         // Increase cyclomatic number
         ++stats[fid].cyclomaticN;

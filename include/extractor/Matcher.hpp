@@ -21,6 +21,8 @@ namespace match
         std::string path;
         std::string name;
         std::string signature;
+        unsigned line;
+        unsigned column;
     };
 
     bool operator<(const FunctionId &first, const FunctionId &second);
@@ -39,6 +41,9 @@ namespace match
         virtual ~MatcherBase();
 
         static std::map<FunctionId, FunctionInfo> getStats();
+
+    protected:
+        std::string getSignature(const clang::FunctionDecl *decl);
 
     protected:
         static std::map<FunctionId, FunctionInfo> stats;
@@ -62,7 +67,6 @@ namespace match
     template<typename T>
     void Matcher<T>::run(const ca::MatchFinder::MatchResult &result)
     {
-        // TODO: do not duplicate code
         std::string functionStr = utils::getStringByType<clang::FunctionDecl>();
         std::string nodeStr = utils::getStringByType<T>();
 
@@ -70,36 +74,14 @@ namespace match
         const clang::FunctionDecl *fd = result.Nodes.getNodeAs<clang::FunctionDecl>(functionStr);
         const T *node = result.Nodes.getNodeAs<T>(nodeStr);
 
-        if (!fd || !node)
+        // Check if node is valid
+        if (!node || !utils::isValidStmt<T>(node))
         {
             return;
         }
 
-        // Check if declaration was implicitly generated
-        if (fd->isImplicit())
-        {
-            return;
-        }
-
-        // Check if it is not a function template
-        auto functionTemplate = clang::FunctionDecl::TemplatedKind::TK_FunctionTemplate;
-
-        if (fd->getTemplatedKind() == functionTemplate)
-        {
-            return;
-        }
-
-        // Check if statement is valid
-        // Invalid statements are:
-        // - a switch case without body
-        // - a non-logical binary operator
-        if (!utils::isValidStmt<T>(node))
-        {
-            return;
-        }
-
-        // Parse function signature from AST (there is no method to get it!)
-        std::string signature = utils::parseSignature(fd);
+        // Check if object is valid and get function signature
+        std::string signature = getSignature(fd);
         if (signature.empty())
         {
             return;
@@ -110,12 +92,14 @@ namespace match
 
         // Fill map key
         FunctionId fid;
-        fid.path = sm.getFilename(fd->getLocation());
-        fid.name = fd->getQualifiedNameAsString();
+        fid.path      = sm.getFilename(fd->getLocation());
+        fid.name      = fd->getQualifiedNameAsString();
         fid.signature = signature;
+        fid.line      = sm.getSpellingLineNumber(loc);
+        fid.column    = sm.getSpellingColumnNumber(loc);
 
         // Log match
-        utils::logMatch(fid.path, sm.getSpellingLineNumber(loc), sm.getSpellingColumnNumber(loc), nodeStr);
+        utils::logMatch(fid.path, fid.line, fid.column, nodeStr);
 
         // Increase cyclomatic number
         ++stats[fid].cyclomaticN;
